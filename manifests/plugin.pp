@@ -27,25 +27,20 @@ define rbenv::plugin(
     }
   }
 
-  exec { "rbenv::plugin::checkout ${user} ${plugin_name}":
-    command => "git clone ${source} ${destination}",
-    user    => $user,
-    group   => $group,
-    creates => $destination,
-    path    => ['/bin', '/usr/bin', '/usr/sbin'],
-    timeout => $timeout,
-    cwd     => $home_path,
-    require => File["rbenv::plugins ${user}"],
+  vcsrepo { "rbenv::plugin::checkout ${user} ${plugin_name}":
+    ensure   => latest,
+    provider => git,
+    source   => $source,
+    revision => 'master',
+    path     => $destination,
   }
 
-  exec { "rbenv::plugin::update ${user} ${plugin_name}":
-    command => 'git pull',
-    user    => $user,
+  file { $destination :
+    ensure  => present,
+    owner   => $user,
     group   => $group,
-    path    => ['/bin', '/usr/bin', '/usr/sbin'],
-    timeout => $timeout,
-    cwd     => $destination,
-    require => Exec["rbenv::plugin::checkout ${user} ${plugin_name}"],
+    recurse => true,
+    require => Vcsrepo["rbenv::plugin::checkout ${user} ${plugin_name}"]
   }
 
 }
