@@ -7,4 +7,4 @@ description 'Puppet module for rbenv Ruby Version Manager'
 project_page 'https://github.com/alup/puppet-rbenv'
 
 # Dependencies
-dependency 'puppetlabs/vcsrepo', '>= 0.2.0'
+dependency 'puppetlabs/vcsrepo', '>= 0.1.2'
